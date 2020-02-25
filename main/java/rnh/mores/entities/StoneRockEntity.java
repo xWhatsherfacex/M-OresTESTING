@@ -36,7 +36,14 @@ public class StoneRockEntity extends ProjectileItemEntity{
 		if (result.getType() == RayTraceResult.Type.ENTITY) {
 	         Entity entity = ((EntityRayTraceResult)result).getEntity();	        
 	         entity.attackEntityFrom(DamageSource.causeThrownDamage(this, this.getThrower()), 4);
-	      }
+		this.entityDropItem(new ItemStack(ItemInit.stone_rock_normal_item));
+	      } else if (result.getType() == RayTraceResult.Type.BLOCK) {
+			//Check for glass...break glass
+			//this.world.playSound(null, this.getPosition(), SoundEvents.BLOCK_GLASS_BREAK, SoundCategory.HOSTILE, 1, 1);
+			this.entityDropItem(new ItemStack(ItemInit.stone_rock_normal_item));	
+			
+			//Check for other blocks...play sound
+		}
 
 	      if (!this.world.isRemote) {
 	         this.world.setEntityState(this, (byte)3);
