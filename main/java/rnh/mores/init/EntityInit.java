@@ -15,10 +15,13 @@ public class EntityInit {
 	
 	public static EntityType<StoneRockEntity> STONE_ROCK_ENTITY;
 	
-	
+	@SubscribeEvent
+	@SuppressWarnings("unchecked")
 	public static void registerEntities(final RegistryEvent.Register<EntityType<?>> event) {
 		
-		event.getRegistry().register("stone_rock", EntityType.Builder.<StoneRockEntity>create(StoneRockEntity::new, EntityClassification.MISC).size(0.25F, 0.25F));		
+		event.getRegistry().register(STONE_ROCK_ENTITY = (EntityType<StoneRockEntity>) new EntityTypes(StoneRockEntity::new, EntityClassification.MISC, false, false, false, false, EntitySize.fixed(0.25F, 0.25F)).setRegistryName("stone_rock_entity"));
+		
+		
 	}
 	
 }
