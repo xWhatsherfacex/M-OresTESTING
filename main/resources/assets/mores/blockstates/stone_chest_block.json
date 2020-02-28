@@ -1,0 +1,5 @@
+{
+    "variants": {
+        "": { "model": "mores:block/stone_chest_block" }
+    }
+}
