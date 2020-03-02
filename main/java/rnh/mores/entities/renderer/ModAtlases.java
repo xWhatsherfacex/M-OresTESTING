@@ -2,13 +2,20 @@ package rnh.mores.entities.renderer;
 
 import java.util.function.Consumer;
 
+
+import net.minecraft.client.renderer.Atlases;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.model.Material;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.client.event.TextureStitchEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod;
 import rnh.mores.Main;
 import rnh.mores.objects.blocks.StoneChestType;
-import rnh.mores.objects.blocks.tileentity.StoneChestTileEntity;
+import net.minecraftforge.api.distmarker.Dist;
+
+@Mod.EventBusSubscriber(modid = Main.MODID, value = Dist.CLIENT, bus = Mod.EventBusSubscriber.Bus.MOD)
 
 public class ModAtlases {
 
@@ -17,30 +24,28 @@ public class ModAtlases {
 	   public static final Material STONE_CHEST_MATERIAL = getStoneChestMaterial("stone_chest_normal");
 	   public static final Material STONE_CHEST_LEFT_MATERIAL = getStoneChestMaterial("stone_chest_left");
 	   public static final Material STONE_CHEST_RIGHT_MATERIAL = getStoneChestMaterial("stone_chest_right");
+	   
 	
 	   public static RenderType getStoneChestType() {
 		      return STONE_CHEST_TYPE;
 		   }
 	   
-	   public static void collectAllMaterials(Consumer<Material> p_228775_0_) {
-		   p_228775_0_.accept(STONE_CHEST_MATERIAL);
-		      p_228775_0_.accept(STONE_CHEST_LEFT_MATERIAL);
-		      p_228775_0_.accept(STONE_CHEST_RIGHT_MATERIAL);	   
+	   public static void collectAllMaterials(Consumer<Material> material) {
+		   material.accept(STONE_CHEST_MATERIAL);
+		   material.accept(STONE_CHEST_LEFT_MATERIAL);
+		   material.accept(STONE_CHEST_RIGHT_MATERIAL);	   
 	   }
 	   
-	   private static Material getStoneChestMaterial(String p_228774_0_) {
-		      return new Material(STONE_CHEST_ATLAS, new ResourceLocation(Main.MODID + "textures/entity/chest/" + p_228774_0_));
+	   private static Material getStoneChestMaterial(String name) {
+		      return new Material(STONE_CHEST_ATLAS, new ResourceLocation("entity/chest/" + name));
 		   }
 	   
-	   public static Material getStoneChestMaterial(TileEntity p_228771_0_, StoneChestType p_228771_1_) {
-		      if ( p_228771_0_ instanceof StoneChestTileEntity) {
-		         return getStoneChestMaterial(p_228771_1_, STONE_CHEST_MATERIAL, STONE_CHEST_LEFT_MATERIAL, STONE_CHEST_RIGHT_MATERIAL);
-		      }
-			return null;
+	   public static Material getStoneChestMaterial(TileEntity entity, StoneChestType type) {
+		   		return getStoneChestMaterial(type, STONE_CHEST_MATERIAL, STONE_CHEST_LEFT_MATERIAL, STONE_CHEST_RIGHT_MATERIAL);
 		   }
 
-		private static Material getStoneChestMaterial(StoneChestType p_228772_0_, Material p_228772_1_, Material p_228772_2_, Material p_228772_3_) {
-		      switch(p_228772_0_) {
+		private static Material getStoneChestMaterial(StoneChestType type, Material p_228772_1_, Material p_228772_2_, Material p_228772_3_) {
+		      switch(type) {
 		      case LEFT:
 		         return p_228772_2_;
 		      case RIGHT:
@@ -50,5 +55,16 @@ public class ModAtlases {
 		         return p_228772_1_;
 		      }
 		   }
-	
+		
+		@SubscribeEvent
+		public static void onStitch(TextureStitchEvent.Pre event) {
+		    if (!event.getMap().getTextureLocation().equals(Atlases.CHEST_ATLAS)) {
+		      return;
+		    }
+
+		    event.addSprite(STONE_CHEST_MATERIAL.getTextureLocation());
+		    event.addSprite(STONE_CHEST_LEFT_MATERIAL.getTextureLocation());
+		    event.addSprite(STONE_CHEST_RIGHT_MATERIAL.getTextureLocation());
+		
+		}
 }
